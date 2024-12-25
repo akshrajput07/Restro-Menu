@@ -38,7 +38,7 @@ export default function Home() {
       console.error('Error fetching restaurants:', error);
       setError('Failed to fetch restaurant menus. Please try again.'); // Set error message
     } else {
-      const parsedData = data.map((restaurant: any) => ({
+      const parsedData = data.map((restaurant: Restaurant) => ({
         ...restaurant,
       }));
       setRestaurants(parsedData);
