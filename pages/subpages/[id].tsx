@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/supabase_config/supabase_config';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Restaurant {
   id: string;
@@ -119,11 +120,15 @@ export default function RestaurantDetails() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {images.map((image) => (
           <div key={image.id} className="p-2 border rounded-lg shadow-md">
-            <img 
-              src={image.image_url} 
-              alt={image.description || 'Menu image'} 
-              className="w-full h-48 object-cover" 
-            />
+            <div className="relative w-full h-48">
+              <Image 
+                src={image.image_url} 
+                alt={image.description || 'Menu image'} 
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
             {image.description && <p className="text-sm mt-2">{image.description}</p>}
           </div>
         ))}

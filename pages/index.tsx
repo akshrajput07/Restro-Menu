@@ -25,7 +25,6 @@ export default function Home() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [isNavigating, setIsNavigating] = useState(false);
 
   const fetchRestaurants = async () => {
     setLoading(true);
@@ -88,7 +87,6 @@ export default function Home() {
 
   const handleRestaurantClick = (e: React.MouseEvent, restaurantId: string) => {
     e.preventDefault();
-    setIsNavigating(true);
     router.push(`/subpages/${restaurantId}`);
   };
 
