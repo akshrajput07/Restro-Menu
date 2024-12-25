@@ -8,22 +8,24 @@ export default function AddMenu() {
   const [newRestaurant, setNewRestaurant] = useState({
     name: '',
     best_sell_item: '',
-    top_five_items: ['', '', '', '', ''], // Initialize with five empty strings
+    top_five_items: Array(5).fill({ name: '', price: '' }), // Initialize with five empty objects
     email: '',
-    phone: ''
+    phone: '',
   });
 
   const addRestaurant = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase
       .from('Menu')
-      .insert([{ 
-        name: newRestaurant.name, 
-        best_sell_item: newRestaurant.best_sell_item, 
-        top_five_item: newRestaurant.top_five_items, // Directly use the array
-        email: newRestaurant.email, 
-        phone: newRestaurant.phone 
-      }]);
+      .insert([
+        {
+          name: newRestaurant.name,
+          best_sell_item: newRestaurant.best_sell_item,
+          top_five_item: newRestaurant.top_five_items, // Directly use the array
+          email: newRestaurant.email,
+          phone: newRestaurant.phone,
+        },
+      ]);
 
     if (error) {
       console.error('Error adding restaurant:', error);
@@ -32,18 +34,17 @@ export default function AddMenu() {
     }
   };
 
-  const handleTopFiveChange = (index: number, value: string) => {
+  const handleTopFiveChange = (index: number, field: 'name' | 'price', value: string) => {
     const updatedTopFive = [...newRestaurant.top_five_items];
-    updatedTopFive[index] = { name: value, price: "10" }; // Update the specific item as an object
+    updatedTopFive[index] = { ...updatedTopFive[index], [field]: value }; // Update specific field
     setNewRestaurant({ ...newRestaurant, top_five_items: updatedTopFive });
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-4">Add a New Restaurant Menu</h1>
       <form onSubmit={addRestaurant} className="space-y-4">
-      <h2 className="font-semibold">Basic Details:</h2>
+        <h2 className="font-semibold">Basic Details:</h2>
         <input
           type="text"
           placeholder="Restaurant Name"
@@ -62,15 +63,24 @@ export default function AddMenu() {
         />
         <h2 className="font-semibold">Top 5 Items:</h2>
         {newRestaurant.top_five_items.map((item, index) => (
-          <input
-            key={index}
-            type="text"
-            placeholder={`Item ${index + 1}`}
-            value={item.name}
-            onChange={(e) => handleTopFiveChange(index, e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-            required
-          />
+          <div key={index} className="flex gap-4">
+            <input
+              type="text"
+              placeholder={`Item ${index + 1} Name`}
+              value={item.name}
+              onChange={(e) => handleTopFiveChange(index, 'name', e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-lg"
+              required
+            />
+            <input
+              type="number"
+              placeholder="Price (₹)"
+              value={item.price}
+              onChange={(e) => handleTopFiveChange(index, 'price', e.target.value)}
+              className="w-1/3 p-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
         ))}
         <h2 className="font-semibold">Contact Details:</h2>
         <input
