@@ -34,9 +34,10 @@ export default function AddMenu() {
 
   const handleTopFiveChange = (index: number, value: string) => {
     const updatedTopFive = [...newRestaurant.top_five_items];
-    updatedTopFive[index] = value; // Update the specific item
+    updatedTopFive[index] = { name: value, price: "10" }; // Update the specific item as an object
     setNewRestaurant({ ...newRestaurant, top_five_items: updatedTopFive });
-  };
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -65,7 +66,7 @@ export default function AddMenu() {
             key={index}
             type="text"
             placeholder={`Item ${index + 1}`}
-            value={item}
+            value={item.name}
             onChange={(e) => handleTopFiveChange(index, e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-lg"
             required

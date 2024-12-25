@@ -26,6 +26,7 @@ export default function Home() {
       .order('created_at', { ascending: false });
 
     setLoading(false); // Set loading to false after fetching
+    console.log(data)
 
     if (error) {
       console.error('Error fetching restaurants:', error);
@@ -91,7 +92,7 @@ export default function Home() {
               <p className="text-md font-semibold">Our Top 5:</p>
               <ul className="list-disc list-inside mb-2 text-sm">
                 {restaurant.top_five_item.map((item, index) => (
-                  <li key={index}>{item}</li>
+                  <li key={index}>{item.name}</li>
                 ))}
               </ul>
               <p className="text-md">Contact Details:</p>
