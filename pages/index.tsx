@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/supabase_config/supabase_config';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface TopFiveItem {
   name: string;
@@ -23,6 +24,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const fetchRestaurants = async () => {
     setLoading(true);
@@ -31,7 +34,8 @@ export default function Home() {
       .from('Menu')
       .select('*')
       .order('created_at', { ascending: false });
-
+      console.log(data);
+      
     setLoading(false); // Set loading to false after fetching
 
     if (error) {
@@ -80,6 +84,12 @@ export default function Home() {
         part
       )
     );
+  };
+
+  const handleRestaurantClick = (e: React.MouseEvent, restaurantId: string) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push(`/subpages/${restaurantId}`);
   };
 
   // Circular loading indicator
@@ -139,8 +149,9 @@ export default function Home() {
 
           return (
             <div
+              onClick={(e) => handleRestaurantClick(e, restaurant.id)}
               key={restaurant.id}
-              className={`p-4 rounded-lg shadow-md ${randomColor}`} // Added shadow-md for better visibility
+              className={`p-4 rounded-lg shadow-md ${randomColor} cursor-pointer transition-transform hover:scale-105`}
             >
               <h2 className="text-xl font-semibold">
                 {highlightText(restaurant.name, searchQuery)}
