@@ -3,14 +3,29 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/supabase_config/supabase_config';
 import Link from 'next/link';
 
+interface Restaurant {
+  id: string;
+  name: string;
+  best_sell_item: string;
+  top_five_item: Array<{ name: string; price: number }>;
+}
+
+interface MenuImage {
+  id: string;
+  menu_id: string;
+  image_url: string;
+  description?: string;
+  created_at?: string;
+}
+
 export default function RestaurantDetails() {
   const router = useRouter();
   const { id } = router.query;
-  const [restaurant, setRestaurant] = useState(null);
-  const [images, setImages] = useState([]);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [images, setImages] = useState<MenuImage[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRestaurantDetails = async (restaurantId) => {
+  const fetchRestaurantDetails = async (restaurantId: string): Promise<Restaurant | null> => {
     console.log('Fetching details for ID:', restaurantId);
     const { data, error } = await supabase
       .from('Menu')
@@ -27,7 +42,7 @@ export default function RestaurantDetails() {
     return data;
   };
 
-  const fetchMenuImages = async (menuId) => {
+  const fetchMenuImages = async (menuId: string): Promise<MenuImage[]> => {
     console.log('Fetching images for menu_id:', menuId);
     const { data, error } = await supabase
       .from('menuimages')
@@ -51,7 +66,9 @@ export default function RestaurantDetails() {
     const loadData = async () => {
       setLoading(true);
       
-      const restaurantData = await fetchRestaurantDetails(id);
+      const restaurantId = Array.isArray(id) ? id[0] : id;
+      const restaurantData = await fetchRestaurantDetails(restaurantId);
+      
       if (restaurantData) {
         setRestaurant(restaurantData);
         const imagesData = await fetchMenuImages(restaurantData.id);
