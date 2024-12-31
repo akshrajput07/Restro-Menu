@@ -87,7 +87,7 @@ export default function Home() {
 
   const handleRestaurantClick = (e: React.MouseEvent, restaurantId: string) => {
     e.preventDefault();
-    router.push(`/subpages/${restaurantId}`);
+    router.push(`/menu/${restaurantId}`);
   };
 
   // Circular loading indicator
